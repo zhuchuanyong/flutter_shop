@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import '../service/service_method.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';  // 轮播插件
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -57,8 +58,11 @@ class SwiperDiy extends StatelessWidget {
   SwiperDiy({Key key, this.swiperDateList}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    // 初始化设计稿
+    ScreenUtil.instance=ScreenUtil(width: 750,height: 1334)..init(context);
     return Container(
-      height: 180,
+      width: ScreenUtil().setWidth(750),// 设置轮播图片宽高
+      height: ScreenUtil().setHeight(333),
       child: Swiper(
         itemBuilder: (BuildContext context, int index) {
           return Image.network('${swiperDateList[index]['image']}',fit: BoxFit.fill,);
