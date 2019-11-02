@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/pages/index_page.dart';
-void main()=>runApp(MyApp());
+
+void main() => runApp(MyApp());
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -8,12 +10,10 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: '百姓生活+',
         debugShowCheckedModeBanner: false, // 去掉debug
-        theme: ThemeData(
-          primaryColor: Colors.pink  //主题背景色
-        ),
+        theme: ThemeData(primaryColor: Colors.pink //主题背景色
+            ),
         home: IndexPage(),
       ),
     );
   }
 }
-

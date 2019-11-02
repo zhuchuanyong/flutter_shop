@@ -35,11 +35,16 @@ class _HomePageState extends State<HomePage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var data = jsonDecode(snapshot.data.toString());
+            // 数据处理
             List<Map> swiper = (data['data']['slides'] as List).cast();
             List<Map> navgatorList = (data['data']['category'] as List).cast();
+            String adPicture =
+                data['data']['advertesPicture']['PICTURE_ADDRESS'];
             return Column(
-              children: <Widget>[SwiperDiy(swiperDateList: swiper),
-                TopNavigator(navgatorList:navgatorList)
+              children: <Widget>[
+                SwiperDiy(swiperDateList: swiper),
+                TopNavigator(navgatorList: navgatorList),
+                AdBanner(AdPicture: adPicture)
               ],
             );
           } else {
@@ -76,6 +81,7 @@ class SwiperDiy extends StatelessWidget {
     );
   }
 }
+
 // 九宫格组件
 class TopNavigator extends StatelessWidget {
   final List navgatorList;
@@ -99,19 +105,32 @@ class TopNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(this.navgatorList.length>0){
+    if (this.navgatorList.length > 0) {
       this.navgatorList.removeRange(10, this.navgatorList.length);
     }
     return Container(
-      height: ScreenUtil().setHeight(320),
+      height: ScreenUtil().setHeight(340),
+      // height: ScreenUtil().setHeight(340),
       padding: EdgeInsets.all(3.0),
       child: GridView.count(
-        crossAxisCount: 5,
-        padding: EdgeInsets.all(5.0),
-        children: navgatorList.map((item){
-          return _gridViewItemUI(context, item);
-        }).toList()
-      ),
+          crossAxisCount: 5,
+          padding: EdgeInsets.all(5.0),
+          children: navgatorList.map((item) {
+            return _gridViewItemUI(context, item);
+          }).toList()),
+    );
+  }
+}
+
+// 广告条
+class AdBanner extends StatelessWidget {
+  final String AdPicture;
+  const AdBanner({Key key, this.AdPicture}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Image.network(AdPicture),
     );
   }
 }
