@@ -23,7 +23,12 @@ class _IndexPageState extends State<IndexPage> {
         icon: Icon(CupertinoIcons.profile_circled), title: Text('会员中心'))
   ];
   // 定义底部页面
-  final List<Widget> tabBodies = [HomePage(), CarPage(), MemberPage(), CategoryPage()];
+  final List<Widget> tabBodies = [
+    HomePage(),
+    CarPage(),
+    MemberPage(),
+    CategoryPage()
+  ];
   int currentIndex = 0; // 当前页面索引
   var currentPage; // 当前页面
   @override
@@ -37,21 +42,25 @@ class _IndexPageState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     // 初始化设计稿
-    ScreenUtil.instance=ScreenUtil(width: 750,height: 1334)..init(context);
+    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334)..init(context);
     return Scaffold(
       backgroundColor: Color.fromRGBO(244, 245, 245, 1.0), // 背景颜色
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // bar类型
         currentIndex: currentIndex, // 当前索引
         items: bottomTabs, // 底部bar信息
-        onTap: (index) { // 点击事件
+        onTap: (index) {
+          // 点击事件
           setState(() {
             currentIndex = index;
             currentPage = tabBodies[currentIndex];
           });
         },
       ),
-      body: currentPage,
+      body: IndexedStack(
+        index: currentIndex,
+        children: tabBodies,
+      ),
     );
   }
 }
