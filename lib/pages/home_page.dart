@@ -17,26 +17,14 @@ class _HomePageState extends State<HomePage>
   bool get wantKeepAlive => true;
   String homePageContent = '正在请求数据';
   @override
-  void initState() {
-    // TODO: implement initState
-
-    // TODO 请求首页数据
-    getHomePageContent().then((val) {
-      setState(() {
-        homePageContent = val.toString();
-      });
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var formData = {'lon': '115.029.32', 'lat': '35.761.89'};
     return Scaffold(
       appBar: AppBar(
         title: Text('百姓生活'),
       ),
       body: FutureBuilder(
-        future: getHomePageContent(),
+        future: request('homePageContent', formData),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var data = jsonDecode(snapshot.data.toString());
@@ -70,7 +58,8 @@ class _HomePageState extends State<HomePage>
                   FloorTitle(picture_address: floor2Title),
                   FloorContent(floorGoodsList: floor2),
                   FloorTitle(picture_address: floor3Title),
-                  FloorContent(floorGoodsList: floor3)
+                  FloorContent(floorGoodsList: floor3),
+                  HotGoods()
                 ],
               ),
             );
@@ -325,6 +314,32 @@ class FloorContent extends StatelessWidget {
         onTap: () {},
         child: Image.network(goods['image']),
       ),
+    );
+  }
+}
+
+//火爆商品
+class HotGoods extends StatefulWidget {
+  HotGoods({Key key}) : super(key: key);
+
+  @override
+  _HotGoodsState createState() => _HotGoodsState();
+}
+
+class _HotGoodsState extends State<HotGoods> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    request('homePageBelowConten', 1).then((val) {
+      print(val);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text('hahhahaha'),
     );
   }
 }
