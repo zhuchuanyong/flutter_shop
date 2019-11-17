@@ -12,10 +12,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
+  int page = 1;
+  List<Map> hotGoodsList = [];
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
   String homePageContent = '正在请求数据';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getHotGoods();
+  }
+
   @override
   Widget build(BuildContext context) {
     var formData = {'lon': '115.029.32', 'lat': '35.761.89'};
@@ -24,7 +33,7 @@ class _HomePageState extends State<HomePage>
         title: Text('百姓生活'),
       ),
       body: FutureBuilder(
-        future: request('homePageContent', formData),
+        future: request('homePageContent', formData: formData),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var data = jsonDecode(snapshot.data.toString());
@@ -59,7 +68,7 @@ class _HomePageState extends State<HomePage>
                   FloorContent(floorGoodsList: floor2),
                   FloorTitle(picture_address: floor3Title),
                   FloorContent(floorGoodsList: floor3),
-                  HotGoods()
+                  _hotGoods()
                 ],
               ),
             );
@@ -69,6 +78,80 @@ class _HomePageState extends State<HomePage>
             );
           }
         },
+      ),
+    );
+  }
+
+  void _getHotGoods() {
+    var formData = {'page': page};
+    request("homePageBelowConten", formData: formData).then((val) {
+      var data = json.decode(val.toString());
+      List<Map> newGoodsList = (data['data'] as List).cast();
+      setState(() {
+        hotGoodsList.addAll(newGoodsList);
+        page++;
+      });
+    });
+  }
+
+  // 变量形式
+  Widget hotTitle = Container(
+    margin: EdgeInsets.only(top: 10.0),
+    alignment: Alignment.center,
+    color: Colors.transparent,
+    padding: EdgeInsets.all(5.0),
+    child: Text('火爆专区'),
+  );
+
+  // 方法形式
+  Widget _wrapList() {
+    if (hotGoodsList.length != 0) {
+      List<Widget> listWidget = hotGoodsList.map((val) {
+        return InkWell(
+          onTap: () {},
+          child: Container(
+            width: ScreenUtil().setWidth(372),
+            color: Colors.white,
+            padding: EdgeInsets.all(5.0),
+            margin: EdgeInsets.only(bottom: 3.0),
+            child: Column(
+              children: <Widget>[
+                Image.network(val['image'], width: ScreenUtil().setWidth(370)),
+                Text(
+                  val['name'],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: Colors.pink, fontSize: ScreenUtil().setSp(26)),
+                ),
+                Row(
+                  children: <Widget>[
+                    Text('${val['mallPrice']}'),
+                    Text('${val['price']}',
+                        style: TextStyle(
+                            color: Colors.black26,
+                            decoration: TextDecoration.lineThrough))
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      }).toList();
+
+      return Wrap(
+        spacing: 2,
+        children: listWidget,
+      );
+    } else {
+      return Text('');
+    }
+  }
+
+  Widget _hotGoods() {
+    return Container(
+      child: Column(
+        children: <Widget>[hotTitle, _wrapList()],
       ),
     );
   }
@@ -319,27 +402,27 @@ class FloorContent extends StatelessWidget {
 }
 
 //火爆商品
-class HotGoods extends StatefulWidget {
-  HotGoods({Key key}) : super(key: key);
+// class HotGoods extends StatefulWidget {
+//   HotGoods({Key key}) : super(key: key);
 
-  @override
-  _HotGoodsState createState() => _HotGoodsState();
-}
+//   @override
+//   _HotGoodsState createState() => _HotGoodsState();
+// }
 
-class _HotGoodsState extends State<HotGoods> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    request('homePageBelowConten', 1).then((val) {
-      print(val);
-    });
-  }
+// class _HotGoodsState extends State<HotGoods> {
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//     request('homePageBelowConten', formData: 1).then((val) {
+//       print(val);
+//     });
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Text('hahhahaha'),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       child: Text('hahhahaha'),
+//     );
+//   }
+// }
