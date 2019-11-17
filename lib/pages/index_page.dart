@@ -25,9 +25,9 @@ class _IndexPageState extends State<IndexPage> {
   // 定义底部页面
   final List<Widget> tabBodies = [
     HomePage(),
+    CategoryPage(),
     CarPage(),
     MemberPage(),
-    CategoryPage()
   ];
   int currentIndex = 0; // 当前页面索引
   var currentPage; // 当前页面
