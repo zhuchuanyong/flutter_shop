@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'dart:convert';
 import '../service/service_method.dart';
 import 'package:flutter_swiper/flutter_swiper.dart'; // 轮播插件
@@ -22,7 +23,7 @@ class _HomePageState extends State<HomePage>
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getHotGoods();
+    // _getHotGoods();
   }
 
   @override
@@ -53,8 +54,30 @@ class _HomePageState extends State<HomePage>
             List<Map> floor1 = (data['data']['floor1'] as List).cast();
             List<Map> floor2 = (data['data']['floor1'] as List).cast();
             List<Map> floor3 = (data['data']['floor1'] as List).cast();
-            return SingleChildScrollView(
-              child: Column(
+            return EasyRefresh(
+              footer: ClassicalFooter(
+                bgColor: Colors.white,
+                textColor: Colors.pink,
+                showInfo: true,
+                noMoreText: '',
+                infoColor: Colors.pink,
+                loadReadyText: '上拉加载',
+                loadText: 'loadText',
+                infoText: '加载中',
+              ),
+              header: ClassicalHeader(
+                bgColor: Colors.white,
+                textColor: Colors.pink,
+                showInfo: true,
+                infoColor: Colors.pink,
+                refreshReadyText: '准备刷新文字',
+                refreshText: '提示刷新文字',
+                refreshedText: '刷新完成文字',
+                refreshFailedText: '刷新失败文字',
+                noMoreText: '没有更多文字',
+                infoText: '更多信息',
+              ),
+              child: ListView(
                 children: <Widget>[
                   SwiperDiy(swiperDateList: swiper),
                   TopNavigator(navgatorList: navgatorList),
@@ -71,6 +94,30 @@ class _HomePageState extends State<HomePage>
                   _hotGoods()
                 ],
               ),
+              onLoad: () async {
+                print('开始加载更多');
+                var formData = {'page': page};
+                request("homePageBelowConten", formData: formData).then((val) {
+                  var data = json.decode(val.toString());
+                  List<Map> newGoodsList = (data['data'] as List).cast();
+                  setState(() {
+                    hotGoodsList.addAll(newGoodsList);
+                    page++;
+                  });
+                });
+              },
+              onRefresh: () async {
+                print('开始刷新');
+                var formData = {'page': page};
+                request("homePageBelowConten", formData: formData).then((val) {
+                  var data = json.decode(val.toString());
+                  List<Map> newGoodsList = (data['data'] as List).cast();
+                  setState(() {
+                    hotGoodsList.addAll(newGoodsList);
+                    page++;
+                  });
+                });
+              },
             );
           } else {
             return Center(
@@ -82,17 +129,17 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  void _getHotGoods() {
-    var formData = {'page': page};
-    request("homePageBelowConten", formData: formData).then((val) {
-      var data = json.decode(val.toString());
-      List<Map> newGoodsList = (data['data'] as List).cast();
-      setState(() {
-        hotGoodsList.addAll(newGoodsList);
-        page++;
-      });
-    });
-  }
+  // void _getHotGoods() {
+  //   var formData = {'page': page};
+  //   request("homePageBelowConten", formData: formData).then((val) {
+  //     var data = json.decode(val.toString());
+  //     List<Map> newGoodsList = (data['data'] as List).cast();
+  //     setState(() {
+  //       hotGoodsList.addAll(newGoodsList);
+  //       page++;
+  //     });
+  //   });
+  // }
 
   // 变量形式
   Widget hotTitle = Container(
