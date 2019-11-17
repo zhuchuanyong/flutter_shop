@@ -30,9 +30,10 @@ class _CategoryPageState extends State<CategoryPage> {
 
   void _getCategory() async {
     await request('getCategory').then((val) {
+      // print(val);
       var data = json.decode(val.toString());
-      print(data);
-      CategoryBigListModel list = CategoryBigListModel.fromJson(data['data']);
+      // print(data);
+      CategoryModel list = CategoryModel.fromJson(data);
       list.data.forEach((item) => print(item.mallCategoryName));
     });
   }
